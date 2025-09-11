@@ -1,9 +1,10 @@
 from consts import GB
 
+# TODO: add logic
 
 class VictoriaMetricsAPI:
     @staticmethod
-    def get_src_number_of_brokers() -> int:
+    def get_number_of_brokers(network: str, cluster_name: str) -> int:
         return 3
 
     @staticmethod
@@ -11,7 +12,7 @@ class VictoriaMetricsAPI:
         return 6
 
     @staticmethod
-    def get_src_kafka_storage() -> float:
+    def get_kafka_storage(network: str, cluster_name: str) -> float:
         return 500 * GB
 
     @staticmethod
