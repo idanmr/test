@@ -5,12 +5,14 @@ from resources.base import BaseResource
 
 
 class KafkaResource(BaseResource):
-    num_of_brokers: int
+    src_num_of_brokers: int
+    dst_num_of_brokers: int
     src_cluster_storage: float
     dst_cluster_storage: float
 
-    def __init__(self, num_of_brokers: int, src_cluster_storage: float, dst_cluster_storage: float) -> None:
-        super().__init__(num_of_brokers=num_of_brokers,
+    def __init__(self, src_num_of_brokers: int, dst_num_of_brokers: int, src_cluster_storage: float, dst_cluster_storage: float) -> None:
+        super().__init__(src_num_of_brokers=src_num_of_brokers,
+                         dst_num_of_brokers=dst_num_of_brokers,
                          src_cluster_storage=src_cluster_storage,
                          dst_cluster_storage=dst_cluster_storage)
 
@@ -18,7 +20,23 @@ class KafkaResource(BaseResource):
         needed_storage: float = KafkaResource.__get_kafka_storage_by_throughput(throughput=desired_throughput)
         needed_brokers: int = KafkaResource.__get_num_of_brokers_by_throughput(throughput=desired_throughput)
         return KafkaResource(src_cluster_storage=needed_storage, dst_cluster_storage=needed_storage,
-                             num_of_brokers=needed_brokers)
+                             src_num_of_brokers=needed_brokers, dst_num_of_brokers=needed_brokers)
+
+    def get_missing_resources(self, desired_throughput: float) -> BaseResource:
+        needed = self.calculate_needed_resources(desired_throughput)
+
+        missing_src_brokers = max(0, needed.src_num_of_brokers - self.src_num_of_brokers)
+        missing_dst_brokers = max(0, needed.dst_num_of_brokers - self.dst_num_of_brokers)
+        missing_src_storage = max(0, needed.src_cluster_storage - self.src_cluster_storage)
+        missing_dst_storage = max(0, needed.dst_cluster_storage - self.dst_cluster_storage)
+
+        return KafkaResource(
+            src_num_of_brokers=missing_src_brokers,
+            dst_num_of_brokers=missing_dst_brokers,
+            src_cluster_storage=missing_src_storage,
+            dst_cluster_storage=missing_dst_storage
+        )
+
 
     @staticmethod
     def __get_num_of_brokers_by_throughput(throughput: float) -> int:
@@ -34,7 +52,9 @@ class KafkaResource(BaseResource):
         return min(src_cluster_storage_throughput, dst_cluster_storage_throughput)
 
     def __get_infrastructure_throughput(self) -> float:
-        return self.num_of_brokers * KAFKA_BROKER_MAXIMUM_THROUGHPUT
+        src_infrastructure_throughput: float = self.src_num_of_brokers * KAFKA_BROKER_MAXIMUM_THROUGHPUT
+        dst_infrastructure_throughput: float = self.dst_num_of_brokers * KAFKA_BROKER_MAXIMUM_THROUGHPUT
+        return min(src_infrastructure_throughput, dst_infrastructure_throughput)
 
     def get_current_resource_throughput(self):
         storage_throughput: float = self.__get_storage_throughput()
