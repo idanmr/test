@@ -32,7 +32,8 @@ class NifiResource(BaseResource):
         return NifiResource(
             src_storage=missing_src_storage,
             dst_storage=missing_dst_storage,
-            stress_testing_throughput=missing_stress_testing_throughput
+            stress_testing_throughput=missing_stress_testing_throughput,
+            sla=None
         )
 
     def __get_storage_by_throughput_and_sla(self, throughput: float) -> float:

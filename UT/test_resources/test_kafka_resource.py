@@ -1,6 +1,6 @@
 import pytest
 from consts import KAFKA_RETENTION, KAFKA_BROKER_MAXIMUM_THROUGHPUT
-from resources.kafka import KafkaResource
+from resources.kafka2 import KafkaResource
 
 
 @pytest.fixture

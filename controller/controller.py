@@ -3,8 +3,8 @@ from typing import List, Optional
 
 from consts import stress_test_values_by_coin
 from resources.base import BaseResource
-from resources.kafka import KafkaResource
-from resources.nifi import NifiResource
+from resources.kafka.kafka_resource import KafkaResource
+from resources.nifi.nifi_resource import NifiResource
 from sampler.prometheus import PrometheusAPI
 from sampler.victoria_metrics import VictoriaMetricsAPI
 from wallets.models import BaseCoin
@@ -14,7 +14,7 @@ class Controller:
     def __init__(self, desired_throughput: float, coin: BaseCoin):
         self.desired_throughput = desired_throughput
         self.coin = coin
-        self.resource_list: List[BaseResource] = [self.__get_kafka_resource(), self.__get_nifi_resource()]
+        self.resource_list: List[BaseResource] = coin.get_resources()
 
     def calculate_needed_resources(self) -> List[BaseResource]:
         needed_resource_list: List[BaseResource] = []
