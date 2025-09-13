@@ -46,3 +46,13 @@ class NifiResource(BaseResource):
             dst_throughput: float = self.dst_storage / self.sla
             return min(src_throughput, dst_throughput)
         return src_throughput
+
+    def to_human_readable(self) -> str:
+        dst = f"{self.dst_storage:.2f} " if self.dst_storage is not None else "N/A"
+        return (
+            f"NiFi Resource:\n"
+            f"  - Source Storage: {self.src_storage:.2f} \n"
+            f"  - Destination Storage: {dst}\n"
+            f"  - Stress Test Throughput: {self.stress_testing_throughput:.2f}\n"
+            f"  - SLA: {self.sla}"
+        )

@@ -60,3 +60,12 @@ class KafkaResource(BaseResource):
         src_infrastructure_throughput: float = self.src_num_of_brokers * KAFKA_BROKER_MAXIMUM_THROUGHPUT
         dst_infrastructure_throughput: float = self.dst_num_of_brokers * KAFKA_BROKER_MAXIMUM_THROUGHPUT
         return min(src_infrastructure_throughput, dst_infrastructure_throughput)
+
+    def to_human_readable(self) -> str:
+        return (
+            f"Kafka Resource:\n"
+            f"  - Source Storage: {self.src_cluster_storage:.2f} \n"
+            f"  - Destination Storage: {self.dst_cluster_storage:.2f} \n"
+            f"  - Source Brokers: {self.src_num_of_brokers}\n"
+            f"  - Destination Brokers: {self.dst_num_of_brokers}"
+        )

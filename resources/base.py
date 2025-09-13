@@ -13,6 +13,16 @@ class BaseResource(BaseModel):
     def get_missing_resources(self, desired_throughput: float):
         raise NotImplementedError
 
+    def to_human_readable(self) -> str:
+        """
+        Default fallback formatting.
+        Subclasses should override this.
+        """
+        return f"{self.name}: [no details available]"
+
+    def __str__(self) -> str:
+        return self.to_human_readable()
+
 
 class BaseResourceFactory(ABC):
     """

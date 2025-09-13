@@ -50,12 +50,18 @@ class ResourceUI:
                 f"Coin: {coin_enum.value}\n\n"
                 f"Desired Throughput: {desired_throughput}\n"
                 f"Current Throughput: {current_throughput}\n\n"
-                f"Needed Resources:\n{needed}\n\n"
-                f"Current Resources:\n{current}\n\n"
-                f"Missing Resources:\n{missing}"
+                f"Minimum Needed Resources:\n{ResourceUI.format_resources(needed)}\n\n"
+                f"Current Resources:\n{ResourceUI.format_resources(current)}\n\n"
+                f"Missing Resources:\n{ResourceUI.format_resources(missing)}"
             )
 
             messagebox.showinfo("Calculation Result", result_msg)
 
         except ValueError as e:
             messagebox.showerror("Error", str(e))
+
+    @staticmethod
+    def format_resources(resources: list[BaseResource]) -> str:
+        if not resources:
+            return "  None"
+        return "\n\n".join([res.to_human_readable() for res in resources])
